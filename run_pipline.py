@@ -1,3 +1,5 @@
-from utils.data_process import hellow
-from src.model import main
-main()
+# %% 
+from utils.data_process1 import prepareData
+
+eng_lang,ta_lang  = prepareData("eng","ta")
+print(ta_lang.word2count)

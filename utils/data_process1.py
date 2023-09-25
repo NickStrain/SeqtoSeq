@@ -8,6 +8,7 @@ import numpy as np
 # %%
 SOS_token = 0
 EOS_token = 1
+print("SDfs ")
 
 class Lang():
     '''
@@ -36,20 +37,26 @@ class Lang():
         else:
             self.word2count[word] +=1
 # %%             
-def normazilze_string(word):
+def normazilze_string_en(word):
     word = word.lower()
     word = re.sub(r"[^a-zA-Z!?]+", r" ", word)
     
     return word
+
+def normazilze_ta(word):
+    word = word.lower()
+    return  re.sub(r'[?|$|.|!]',r'',word)
+
+
 #%%
 def readLang(lang1,lang2):
-    print("Reading lines")
+    print("Reading lines...")
     
     lang1_lines = open("E:\SeqtoSeq\data\eng_Latn-tam_Taml\\train.eng_Latn",encoding='utf-8')
     lang2_lines = open('E:\SeqtoSeq\data\eng_Latn-tam_Taml\\train.tam_Taml',encoding='utf-8')
 
-    pairs_lang1 = [[normazilze_string(s) for s in l.split('\t')]for l in lang1_lines ]
-    pairs_lang2 = [[s for s in l.split('\t')]for l in lang2_lines]
+    pairs_lang1 = [[normazilze_string_en(s) for s in l.split('\t')]for l in lang1_lines ]
+    pairs_lang2 = [[normazilze_ta(s) for s in l.split('\t')]for l in lang2_lines]
     
     input_lang = Lang(lang1)
     output_lang = Lang(lang2)
@@ -57,17 +64,17 @@ def readLang(lang1,lang2):
     return input_lang,output_lang,pairs_lang1,pairs_lang2 
 
 def prepareData(lang1,lang2):
-    input_lang,output_lang,pairs_ta,pairs_eng = readLang(lang1,lang2)
+    input_lang,output_lang,pairs_eng,pairs_ta = readLang(lang1,lang2)
     
    
     [input_lang.add_Sentence(pair[0]) for pair in pairs_eng]
     [output_lang.add_Sentence(pair[0]) for pair in pairs_ta]
-        
-        
     
-    print(input_lang.word2count)
+    return  input_lang,output_lang
+        
     
 
-prepareData('eng','ta')
-#print(b)    
+    
+
+
     
