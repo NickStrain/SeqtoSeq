@@ -3,7 +3,10 @@ import torch
 import torch.nn as nn 
 import torch.nn.functional as F 
 
-
+MAX_Length = 10
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+SOS_token = 0
+EOS_token = 1
 # %% 
 class Encoder(nn.Module):
     '''
@@ -20,7 +23,7 @@ class Encoder(nn.Module):
         x = self.dropout(self.embedding(x))
         output,hidden = self.lstm(x)
         
-        return output,hidden
+        return output,hidden 
     
 class Decoder(nn.Module):
     '''
@@ -40,7 +43,7 @@ class Decoder(nn.Module):
         x,hidden= self.lstm(x,hidden)
         x = self.out(x)
         
-        return x,hidden
+        return x,hidden 
     
 
 class SeqtoSeq(nn.Module):
@@ -53,6 +56,38 @@ class SeqtoSeq(nn.Module):
         self.encoder = encoder
         self.decoder = decoder
         
-    def forward()
+    def forward(self,inputs,target_tensor=None):
+        '''
+        Teaching force when target tensor is availble
+        Teaching force is Feeding the target tensor to the next input of lstm  
+        '''
     
+        encoder_output,encoder_hidden = self.encoder(inputs) #Encoder part
+        
+        #Decoder
+        
+        batch_size = encoder_output.size(0)
+        decoder_input  = torch.empty(batch_size,1,dtype=torch.long,device=device).fill_(SOS_token)
+        decoder_hidden = encoder_hidden
+        decoder_outputs = []
+        
+        for i in range(MAX_Length):
+            decoder_output,decoder_hidden  = self.decoder(decoder_input,decoder_hidden)
+            decoder_outputs.append(decoder_output)
             
+            if target_tensor is not None:
+                decoder_input = target_tensor[:,i].unsqueeze(1)
+            else:
+                _,topi = decoder_output.topk(1)
+                decoder_input = topi.squeeze(-1).detach()
+                
+        decoder_outputs = torch.cat(decoder_outputs,dim=1)
+        decoder_outputs = F.log_softmax(decoder_outputs,dim=-1)
+        
+        return decoder_outputs,decoder_hidden
+        
+                
+                                                            
+                                                            
+            
+# %%
