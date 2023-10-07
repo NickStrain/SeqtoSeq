@@ -8,7 +8,7 @@ import numpy as np
 # %%
 SOS_token = 0
 EOS_token = 1
-print("SDfs ")
+
 
 class Lang():
     '''
@@ -75,6 +75,12 @@ def prepareData(lang1,lang2):
     
 
     
+
+
+
+
+
+
 
 
     
