@@ -66,11 +66,12 @@ def readLang(lang1,lang2):
 def prepareData(lang1,lang2):
     input_lang,output_lang,pairs_eng,pairs_ta = readLang(lang1,lang2)
     
-   
+    
     [input_lang.add_Sentence(pair[0]) for pair in pairs_eng]
     [output_lang.add_Sentence(pair[0]) for pair in pairs_ta]
     
-    return  input_lang,output_lang
+    print("Hi")
+    return  input_lang,output_lang,pairs_eng,pairs_ta
         
     
 
